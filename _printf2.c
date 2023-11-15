@@ -1,17 +1,19 @@
 #include "main.h"
 
+/**
+ * _printf - Printf function
+ * @format: Format string.
+ * Return: Always return number of characters printed.
+ */
+
 int _printf(const char *format, ...)
 {
-	if (format == NULL)
-		return (-1);
-
-
+	int print_char = 0;
 	va_list args_list;
 
+	if (format == NULL)
+		return (-1);
 	va_start(args_list, format);
-
-
-	int print_char = 0;
 
 	while (*format)
 	{
@@ -31,31 +33,26 @@ int _printf(const char *format, ...)
 				write(1, format, 1);
 				print_char++;
 			}
-			else if (*format == 'c') 
+			else if (*format == 'c')
 			{
 				char c = va_arg(args_list, int);
+
 				write(1, &c, 1);
 				print_char++;
 			}
 			else if (*format == 's')
 			{
 				char *str = va_arg(args_list, char*);
+				int str_lent = 0;
 
-				int str_len = 0;
-
-
-				while (str[str_len] != '\0')
-					str_len++;
-
-
-				write(1, str, str_len);
-
-				print_char += str_len;
+				while (str[str_lent] != '\0')
+					str_lent++;
+				write(1, str, str_lent);
+				print_char += str_lent;
 			}
 		}
 		format++;
 	}
-
 	va_end(args_list);
 	return (print_char);
 }
