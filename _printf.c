@@ -8,51 +8,34 @@
 
 int _printf(const char *format, ...)
 {
-	int print_char = 0;
-	va_list args_list;
+	if (!format)
+	return (-1);
 
-	if (format == NULL)
-		return (-1);
-	va_start(args_list, format);
+	va_list args;
 
-	while (*format)
-	{
+	va_start(args, format);
+
+
+	int count = 0;
+
+
+	for (; *format; format++)
 		if (*format != '%')
+			count += write(1, format, 1);
+		else if (*++format == '\0')
+			break;
+		else if (*format == 'c' || *format == '%')
+			count += write(1, format, 1);
+		else if (*format == 's')
+
 		{
-			write(1, format, 1);
-			print_char++;
+
+			char *str = va_arg(args, char*);
+
+			count += write(1, str, write(1, "", 1));
+
 		}
-		else
-		{
-			format++;
-			if (*format == '\0')
-				break;
 
-			if (*format == '%')
-			{
-				write(1, format, 1);
-				print_char++;
-			}
-			else if (*format == 'c')
-			{
-				char c = va_arg(args_list, int);
-
-				write(1, &c, 1);
-				print_char++;
-			}
-			else if (*format == 's')
-			{
-				char *str = va_arg(args_list, char*);
-				int str_lent = 0;
-
-				while (str[str_lent] != '\0')
-					str_lent++;
-				write(1, str, str_lent);
-				print_char += str_lent;
-			}
-		}
-		format++;
-	}
-	va_end(args_list);
-	return (print_char);
+	va_end(args);
+	return (count);
 }
