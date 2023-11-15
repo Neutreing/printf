@@ -3,28 +3,56 @@
 /**
  * _printf - Printf function
  * @format: Format string.
- * Return: Always return the number of characters printed.
+ * Return: Always return number of characters printed.
  */
+
 int _printf(const char *format, ...)
 {
-	va_list args;
-	int print_cha = 0;
+	int print_char = 0;
+	va_list args_list;
 
-	if (!format)
+	if (format == NULL)
 		return (-1);
+	va_start(args_list, format);
 
-	va_start(args, format);
-
-	for (; *format; format++)
+	while (*format)
 	{
-		if (*format != '%' || (*++format == '\0') || (*format == '%' && ++print_cha))
-			print_cha += write(1, format, 1);
-		else if (*format == 'c')
-			print_cha += write(1, &va_arg(args, int), 1);
-		else if (*format == 's')
-			print_cha += write(1, va_arg(args, char*), write(1, "", 1));
-	}
+		if (*format != '%')
+		{
+			write(1, format, 1);
+			print_char++;
+		}
+		else
+		{
+			format++;
+			if (*format == '\0')
+				break;
 
-	va_end(args);
-	return (print_cha);
+			if (*format == '%')
+			{
+				write(1, format, 1);
+				print_char++;
+			}
+			else if (*format == 'c')
+			{
+				char c = va_arg(args_list, int);
+
+				write(1, &c, 1);
+				print_char++;
+			}
+			else if (*format == 's')
+			{
+				char *str = va_arg(args_list, char*);
+				int str_lent = 0;
+
+				while (str[str_lent] != '\0')
+					str_lent++;
+				write(1, str, str_lent);
+				print_char += str_lent;
+			}
+		}
+		format++;
+	}
+	va_end(args_list);
+	return (print_char);
 }
