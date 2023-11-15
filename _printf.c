@@ -1,5 +1,11 @@
 #include "main.h"
 
+/**
+ * _printf - Printf function
+ * @format: Format string.
+ * Return: Always return number of characters printed.
+ */
+
 int _printf(const char *format, ...)
 {
 	int print_char = 0;
